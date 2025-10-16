@@ -1,13 +1,4 @@
-# from transformers import pipeline
-
-# def detect_emotion(passage: str):
-#     emotion_pipeline = pipeline(
-#         "text-classification",
-#         model="j-hartmann/emotion-english-distilroberta-base",
-#         return_all_scores=False
-#     )
-#     result = emotion_pipeline(passage[:512])[0]
-#     return result["label"], result["score"]
+# === Step 0: Import libraries ===
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
@@ -15,7 +6,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipe
 def load_emotion_model():
     MODEL_NAME = "j-hartmann/emotion-english-distilroberta-base"
 
-    # Efficient model loading for low memory systems
+    # loading model for low memory systems
     model = AutoModelForSequenceClassification.from_pretrained(
         MODEL_NAME,
         torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
@@ -23,7 +14,7 @@ def load_emotion_model():
     )
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-    # Select device automatically
+    # Select device automatically cpu/gpu
     device = 0 if torch.cuda.is_available() else -1
 
     # Build the pipeline with preloaded model

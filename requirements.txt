@@ -2,3 +2,6 @@ transformers
 groq
 langchain
 langgraph
+django
+djangorestframework
+channels

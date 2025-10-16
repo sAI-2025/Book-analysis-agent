@@ -9,7 +9,7 @@ def get_groq_inference(passage: str, mode="book"):
         {"role": "system", "content": "You are a literary analysis assistant."},
         {"role": "user", "content": passage}
     ]
-    model = "llama-3.3-70b-versatile"
+    model = "llama-3.1-8b-instant"
 
     if mode == "book":
         system_prompt = """Identify 2-3 possible books this passage might belong to.

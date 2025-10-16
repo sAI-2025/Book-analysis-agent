@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Book Passage Chatbot | Inventic AI</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Anime.js for animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'inventic-blue': '#0052CC',
+          'inventic-light': '#2684FF',
+          'inventic-cyan': '#00B8D9',
+          'inventic-gray': '#F4F5F7',
+          'inventic-dark': '#172B4D',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  @keyframes typing {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  .typing-dot {
+    animation: typing 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  /* Scrollbar styling */
+  #chat-box::-webkit-scrollbar {
+    width: 6px;
+  }
+  #chat-box::-webkit-scrollbar-thumb {
+    background: #0052CC;
+    border-radius: 10px;
+  }
+
+  /* Smooth hover effects */
+  .quick-reply-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .quick-reply-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 82, 204, 0.3);
+  }
+</style>
+</head>
+<body class="bg-inventic-gray min-h-screen flex items-center justify-center p-4">
+
+<!-- Main Container -->
+<div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-inventic-blue to-inventic-light p-6 text-white">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+          <i class="fas fa-book-reader text-inventic-blue text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold">Book Passage Analyzer</h1>
+          <p class="text-sm opacity-90">Powered by AI • Inventic</p>
+        </div>
+      </div>
+      <button class="hover:bg-white/20 p-2 rounded-lg transition" onclick="clearChat()">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Box -->
+  <div id="chat-box" class="h-96 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-white to-inventic-gray/30">
+    <!-- Welcome Message -->
+    <div class="flex items-start space-x-3 animate-fade-in">
+      <div class="w-8 h-8 bg-inventic-light rounded-full flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-robot text-white text-sm"></i>
+      </div>
+      <div class="bg-white rounded-2xl rounded-tl-none p-4 shadow-md max-w-md">
+        <p class="text-inventic-dark text-sm">👋 Hello! I'm your Book Passage Analyzer. Paste any passage and I'll analyze its emotion, word count, possible book sources, and provide a summary!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typing Indicator (hidden by default) -->
+  <div id="typing-indicator" class="px-6 pb-2 hidden">
+    <div class="flex items-center space-x-2">
+      <div class="w-8 h-8 bg-inventic-light rounded-full flex items-center justify-center">
+        <i class="fas fa-robot text-white text-xs"></i>
+      </div>
+      <div class="bg-white rounded-2xl px-4 py-2 shadow-md flex space-x-1">
+        <div class="w-2 h-2 bg-inventic-blue rounded-full typing-dot"></div>
+        <div class="w-2 h-2 bg-inventic-blue rounded-full typing-dot"></div>
+        <div class="w-2 h-2 bg-inventic-blue rounded-full typing-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Replies Section -->
+  <div id="quick-replies" class="px-6 pb-4 flex gap-2 overflow-x-auto">
+    <button class="quick-reply-btn bg-inventic-cyan/10 text-inventic-cyan px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap border border-inventic-cyan/30" onclick="insertSample()">
+      <i class="fas fa-magic mr-1"></i> Try Sample
+    </button>
+    <button class="quick-reply-btn bg-inventic-light/10 text-inventic-light px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap border border-inventic-light/30" onclick="showHelp()">
+      <i class="fas fa-question-circle mr-1"></i> Help
+    </button>
+  </div>
+
+  <!-- Input Area -->
+  <div class="p-6 bg-white border-t border-gray-200">
+    <div class="flex items-end space-x-3">
+      <div class="flex-1">
+        <textarea
+          id="user-input"
+          rows="3"
+          class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-inventic-blue focus:outline-none resize-none transition"
+          placeholder="Paste your book passage here..."
+          aria-label="Passage input"
+        ></textarea>
+      </div>
+      <button
+        id="send-btn"
+        class="bg-gradient-to-r from-inventic-blue to-inventic-light text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center"
+        onclick="sendMessage()"
+        aria-label="Send message"
+      >
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+    <p class="text-xs text-gray-500 mt-2 text-center">
+      <i class="fas fa-shield-alt"></i> Your data is processed securely
+    </p>
+  </div>
+
+</div>
+
+<script>
+const chatBox = document.getElementById('chat-box');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const typingIndicator = document.getElementById('typing-indicator');
+
+// Append user message
+function appendUserMessage(text) {
+  const msgContainer = document.createElement('div');
+  msgContainer.className = 'flex items-start space-x-3 justify-end animate-fade-in';
+  msgContainer.innerHTML = `
+    <div class="bg-gradient-to-r from-inventic-blue to-inventic-light text-white rounded-2xl rounded-tr-none p-4 shadow-md max-w-md">
+      <p class="text-sm break-words">${escapeHtml(text)}</p>
+    </div>
+    <div class="w-8 h-8 bg-inventic-dark rounded-full flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-user text-white text-sm"></i>
+    </div>
+  `;
+  chatBox.appendChild(msgContainer);
+  scrollToBottom();
+  animateMessage(msgContainer);
+}
+
+// Append bot message with animation
+function appendBotMessage(data) {
+  const msgContainer = document.createElement('div');
+  msgContainer.className = 'flex items-start space-x-3 animate-fade-in';
+
+  const books = data.possible_books.possible_books.join(', ');
+  msgContainer.innerHTML = `
+    <div class="w-8 h-8 bg-inventic-light rounded-full flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-robot text-white text-sm"></i>
+    </div>
+    <div class="bg-white rounded-2xl rounded-tl-none p-5 shadow-lg max-w-md border border-inventic-gray">
+      <div class="space-y-3">
+        <div class="flex items-center space-x-2 text-inventic-blue font-bold">
+          <i class="fas fa-chart-bar"></i>
+          <span>Analysis Results</span>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex items-center space-x-2 bg-inventic-gray/50 p-2 rounded-lg">
+            <i class="fas fa-font text-inventic-cyan"></i>
+            <span class="text-inventic-dark"><strong>Words:</strong> ${data.total_words}</span>
+          </div>
+
+          <div class="flex items-center space-x-2 bg-inventic-gray/50 p-2 rounded-lg">
+            <i class="fas fa-smile text-inventic-cyan"></i>
+            <span class="text-inventic-dark"><strong>Emotion:</strong> ${data.emotion}</span>
+          </div>
+
+          <div class="bg-inventic-gray/50 p-2 rounded-lg">
+            <div class="flex items-center space-x-2 mb-1">
+              <i class="fas fa-book text-inventic-cyan"></i>
+              <span class="text-inventic-dark font-semibold">Possible Books:</span>
+            </div>
+            <p class="text-inventic-dark text-xs ml-6">${books}</p>
+          </div>
+
+          <div class="bg-gradient-to-r from-inventic-blue/5 to-inventic-light/5 p-3 rounded-lg border-l-4 border-inventic-blue">
+            <div class="flex items-center space-x-2 mb-1">
+              <i class="fas fa-file-alt text-inventic-blue"></i>
+              <span class="text-inventic-dark font-semibold">Summary:</span>
+            </div>
+            <p class="text-inventic-dark text-xs leading-relaxed">${data.summary}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  chatBox.appendChild(msgContainer);
+  scrollToBottom();
+  animateMessage(msgContainer);
+}
+
+// Show typing indicator
+function showTyping() {
+  typingIndicator.classList.remove('hidden');
+  scrollToBottom();
+}
+
+// Hide typing indicator
+function hideTyping() {
+  typingIndicator.classList.add('hidden');
+}
+
+// Send message
+async function sendMessage() {
+  const passage = userInput.value.trim();
+  if (passage.length === 0) return;
+
+  appendUserMessage(passage);
+  userInput.value = '';
+  showTyping();
+
+  try {
+    const response = await fetch('/chat/api/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passage })
+    });
+    const result = await response.json();
+
+    setTimeout(() => {
+      hideTyping();
+      if (result.success) {
+        appendBotMessage(result.data);
+      } else {
+        appendErrorMessage(result.error);
+      }
+    }, 1000);
+  } catch (err) {
+    hideTyping();
+    appendErrorMessage('Connection error. Please try again.');
+  }
+}
+
+// Error message
+function appendErrorMessage(error) {
+  const msgContainer = document.createElement('div');
+  msgContainer.className = 'flex items-start space-x-3';
+  msgContainer.innerHTML = `
+    <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-exclamation text-white text-sm"></i>
+    </div>
+    <div class="bg-red-50 border border-red-200 text-red-700 rounded-2xl rounded-tl-none p-4 shadow-md max-w-md">
+      <p class="text-sm"><i class="fas fa-exclamation-triangle mr-1"></i> ${escapeHtml(error)}</p>
+    </div>
+  `;
+  chatBox.appendChild(msgContainer);
+  scrollToBottom();
+}
+
+// Utility functions
+function scrollToBottom() {
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function animateMessage(element) {
+  anime({
+    targets: element,
+    opacity: [0, 1],
+    translateY: [20, 0],
+    duration: 600,
+    easing: 'easeOutExpo'
+  });
+}
+
+function clearChat() {
+  if (confirm('Clear all messages?')) {
+    chatBox.innerHTML = '';
+  }
+}
+
+function insertSample() {
+  userInput.value = "It is our choices, Harry, that show what we truly are, far more than our abilities.";
+}
+
+function showHelp() {
+  const helpMsg = document.createElement('div');
+  helpMsg.className = 'flex items-start space-x-3';
+  helpMsg.innerHTML = `
+    <div class="w-8 h-8 bg-inventic-cyan rounded-full flex items-center justify-center flex-shrink-0">
+      <i class="fas fa-info text-white text-sm"></i>
+    </div>
+    <div class="bg-inventic-cyan/10 border border-inventic-cyan/30 rounded-2xl rounded-tl-none p-4 shadow-md max-w-md">
+      <p class="text-sm text-inventic-dark">Simply paste any book passage and hit send. I'll analyze word count, detect emotions, suggest possible book sources, and summarize the content!</p>
+    </div>
+  `;
+  chatBox.appendChild(helpMsg);
+  scrollToBottom();
+  animateMessage(helpMsg);
+}
+
+// Enter key support
+userInput.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+</script>
+
+</body>
+</html>
+  
