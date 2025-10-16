@@ -2,6 +2,17 @@
 ***
 
 # Book Analysis Chatbot (Django + AI)
+<!-- Badges -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-blue?logo=python" alt="Python 3.11"/>
+  <img src="https://img.shields.io/badge/Django-REST-green?logo=django" alt="Django REST"/>
+  <img src="https://img.shields.io/badge/LLM-Groq-orange?logo=openai" alt="LLM via Groq"/>
+  <img src="https://img.shields.io/badge/Emotion-Transformer-9cf?logo=huggingface" alt="Transformer Emotion Model"/>
+  <img src="https://img.shields.io/badge/UI-TailwindCSS-38B2AC?logo=tailwindcss" alt="TailwindCSS"/>
+  <img src="https://img.shields.io/badge/Deployment-HF%20Spaces-blueviolet?logo=huggingface" alt="Hugging Face Spaces"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?logo=opensourceinitiative" alt="MIT License"/>
+  <img src="https://img.shields.io/badge/Status-Beta-orange?logo=github" alt="Beta Status"/>
+</p>
 
 Analyze any book passage with word count, predominant emotion, candidate source books, and a concise summary. Frontend is a modern chat UI; backend is Django REST-style endpoint wiring your NLP modules.
 
@@ -302,32 +313,6 @@ Errors:
 
 MIT (suggested). Include LICENSE file if open-sourcing.
 
-***
+ 
 
-## Acknowledgements
-
-- Great README patterns: Real Python and templates that emphasize clear setup and usage sections.[1][2]
-- Hugging Face Spaces Docker guidance for hosting non-native frameworks on port 7860.[3][4]
-- Django structure references for professional layout and clarity.[5][6]
-
-[1](https://realpython.com/readme-python-project/)
-[2](https://github.com/othneildrew/Best-README-Template)
-[3](https://huggingface.co/docs/hub/en/spaces-sdks-docker-first-demo)
-[4](https://huggingface.co/docs/hub/en/spaces-sdks-docker)
-[5](https://getcyber.me/posts/anatomy-of-a-django-project-a-comprehensive-guide-to-files-and-structure/)
-[6](https://www.geeksforgeeks.org/python/best-practice-for-django-project-working-directory-structure/)
-[7](https://docs.readme.com/main/docs/python-django-api-metrics)
-[8](https://gitlab.com/thorgate-public/django-project-template/-/blob/master/README.md)
-[9](https://stackoverflow.com/questions/72272216/how-do-i-include-a-django-projects-readme-md-in-a-template)
-[10](https://learndjango.com/tutorials/django-markdown-tutorial)
-[11](https://realpython.com/django-markdown/)
-[12](https://evidence.dev/blog/hugging-face-spaces)
-[13](https://cubettech.com/resources/blog/the-essential-readme-file-elevating-your-project-with-a-comprehensive-document/)
-[14](https://www.youtube.com/watch?v=QQYq5rHgsa4)
-[15](https://bulldogjob.com/readme/how-to-write-a-good-readme-for-your-github-project)
-[16](https://www.youtube.com/watch?v=y_wivteUW6c)
-[17](https://stackoverflow.com/questions/22841764/best-practice-for-django-project-working-directory-structure)
-[18](https://huggingface.co/docs/hub/en/spaces-sdks-docker-examples)
-[19](https://forum.djangoproject.com/t/best-practices-for-structuring-django-projects/39835)
-[20](https://www.kdnuggets.com/how-to-deploy-your-llm-to-hugging-face-spaces)
-
+ 
